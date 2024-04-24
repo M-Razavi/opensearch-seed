@@ -2,13 +2,18 @@ version: '3.7'
 
 services:
 
-  # Elasticsearch Docker Images: https://www.docker.elastic.co/
+  # OpenSearch Docker Images: https://hub.docker.com/r/opensearchproject/opensearch/
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-    container_name: elasticsearch
+    image: opensearchproject/opensearch:1.3.13
+    container_name: opensearch
     environment:
-      - xpack.security.enabled=false
+      - node.name=opensearch01
       - discovery.type=single-node
+      - "DISABLE_SECURITY_PLUGIN=true"
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=docker-cluster
+      - bootstrap.system_call_filter=false
     ulimits:
       memlock:
         soft: -1
@@ -19,26 +24,15 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+      - opensearch-data:/usr/share/opensearch/data
     ports:
       - 9200:9200
-      - 9300:9300
 
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.11.0
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-
-  elasticsearch-seed:
-    container_name: elasticsearch-seed
+  opensearch-seed:
+    container_name: opensearch-seed
     build: ../.
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - OPENSEARCH_URL=http://opensearch:9200
       - INDEX_NAME=my-index
     volumes:
       - ./my-custom-index-settings.json:/seed/index-settings.json
@@ -46,5 +40,5 @@ services:
 
 
 volumes:
-  elasticsearch-data:
+  opensearch-data:
     driver: local
