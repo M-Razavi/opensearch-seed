@@ -1,8 +1,8 @@
-FROM curlimages/curl:latest
+FROM opensearchproject/opensearch:1.3.13
 WORKDIR seed
 
-ARG ELASTICSEARCH_URL
-ENV ELASTICSEARCH_URL=$ELASTICSEARCH_URL
+ARG OPENSEARCH_URL
+ENV OPENSEARCH_URL=$OPENSEARCH_URL
 ARG INDEX_NAME
 ENV INDEX_NAME=$INDEX_NAME
 ARG USER=admin
@@ -10,8 +10,8 @@ ENV USER=$USER
 ARG PASSWORD=admin
 ENV PASSWORD=$PASSWORD
 
-COPY elasticsearch-seed-script.sh .
+COPY opensearch-seed-script.sh .
 COPY index-settings.json .
 COPY index-bulk-payload.json .
 
-ENTRYPOINT ["sh", "elasticsearch-seed-script.sh"]
+ENTRYPOINT ["sh", "opensearch-seed-script.sh"]
