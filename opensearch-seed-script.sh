@@ -5,9 +5,9 @@ echo INDEX_NAME: "$INDEX_NAME"
 echo USER: "$USER"
 echo PASSWORD: "$PASSWORD"
 
-until $(curl -XGET --insecure --user $USER:$PASSWORD "$OPENSEARCH_URL/_cluster/health?wait_for_status=green" > /dev/null); do
-    printf 'WAITING FOR THE OPENSEARCH ENDPOINT TO BE AVAILABLE, trying again in 5 seconds \n'
-    sleep 5
+until $(curl -XGET --insecure --user $USER:$PASSWORD "$OPENSEARCH_URL/_cluster/health?wait_for_status=yellow" > /dev/null); do
+    printf 'WAITING FOR THE OPENSEARCH ENDPOINT TO BE AVAILABLE, trying again in 1 seconds \n'
+    sleep 1
 done
 
 # Create the index

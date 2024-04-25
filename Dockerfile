@@ -1,4 +1,7 @@
-FROM opensearchproject/opensearch:1.3.13
+FROM alpine:3.19
+
+RUN apk add --no-cache curl
+
 WORKDIR seed
 
 ARG OPENSEARCH_URL
